@@ -4,14 +4,27 @@ import multiprocessing
 
 from src.Edge import Edge
 
+sharedData = []
 
-def parallelMergesortEdges(data: list[Edge], processNum: int) -> list[Edge]:
-    data = multiprocessing.RawArray(ctypes.py_object, data)
-    pool = multiprocessing.Pool(processNum)
-    partitionSize = int(math.ceil(float(len(data)) / processNum))
-    partitions = [(data, i * partitionSize, (i + 1) * partitionSize) for i in range(processNum)]
-    pool.starmap(mergesortEdges, partitions)
-    #while len(partitions) > 1:
+
+def parallelMergesortWorker(left: int, right: int):
+    if left >= right:
+        return
+    middle = (left + right) // 2
+    mergesortEdges(sharedData, left, middle)
+    mergesortEdges(sharedData, middle + 1, right)
+    merge(sharedData, left, middle, right)
+
+
+def parallelMergesortEdges(data: list[Edge], processes: int) -> list[Edge]:
+    global sharedData
+    sharedData = multiprocessing.RawArray(ctypes.py_object, data)
+    pool = multiprocessing.Pool(processes)
+    partitionSize = int(math.ceil(float(len(data)) / processes))
+    partitions = [(i * partitionSize, (i + 1) * partitionSize) for i in range(processes)]
+    pool.starmap(parallelMergesortWorker, partitions)
+    # TODO: Rewrite merge logic to inplace sorting
+    # while len(partitions) > 1:
     #    extra = partitions.pop() if len(partitions) % 2 == 1 else None
     #    subtasks = [(data[i], data[i + 1]) for i in range(0, len(data), 2)]
     #    data = pool.map(merge, data) + ([extra] if extra else [])

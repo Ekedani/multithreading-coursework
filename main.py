@@ -14,6 +14,8 @@ if __name__ == '__main__':
     end = time.time()
     print(f'Total serial time: {end - start}')
 
+    print()
+
     start = time.time()
     mst_par = parallelKruskalSolver.findMST(startGraph)
     end = time.time()

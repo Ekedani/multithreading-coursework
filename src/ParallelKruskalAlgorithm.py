@@ -1,10 +1,8 @@
-import ctypes
-import math
-import multiprocessing
 import time
 
 from src.DisjointSetUnion import DisjointSetUnion
 from src.Graph import Graph
+from src.edge_sorting import parallelMergesortEdges
 
 
 class ParallelKruskalAlgorithm:
@@ -36,4 +34,4 @@ class ParallelKruskalAlgorithm:
         return mstGraph
 
     def __orderEdgesByWeight(self, edges):
-        return edges
+        return parallelMergesortEdges(edges, self.threadsNum)

@@ -1,5 +1,6 @@
 import time
 
+from src.Edge import is_edge_array_sorted
 from src.Graph import Graph
 from src.DisjointSetUnion import DisjointSetUnion
 from src.edge_sorting import mergesortEdges
@@ -23,7 +24,7 @@ class SerialKruskalAlgorithm:
         orderedEdges = self.__orderEdgesByWeight(edges=graph.edges)
         end = time.time()
         print(f'Sorting Edges: {end - start} s')
-
+        print(f'Sorted correctly: {is_edge_array_sorted(orderedEdges)}')
         start = time.time()
         for edge in orderedEdges:
             if mstComponents.find(edge.start) != mstComponents.find(edge.end):
