@@ -2,6 +2,7 @@ import time
 
 from src.Graph import Graph
 from src.DisjointSetUnion import DisjointSetUnion
+from src.edge_sorting import mergesortEdges
 
 
 class SerialKruskalAlgorithm:
@@ -33,38 +34,5 @@ class SerialKruskalAlgorithm:
         return mstGraph
 
     def __orderEdgesByWeight(self, edges):
-        def mergesort(edges):
-            if len(edges) > 1:
-                mid = len(edges) // 2
-                left = edges[:mid]
-                right = edges[mid:]
-
-                mergesort(left)
-                mergesort(right)
-
-                i = j = k = 0
-
-                while i < len(left) and j < len(right):
-                    if left[i].weight < right[j].weight:
-                        edges[k] = left[i]
-                        i += 1
-                    else:
-                        edges[k] = right[j]
-                        j += 1
-                    k += 1
-
-                while i < len(left):
-                    edges[k] = left[i]
-                    i += 1
-                    k += 1
-
-                while j < len(right):
-                    edges[k] = right[j]
-                    j += 1
-                    k += 1
-
-        #return sorted(edges, key=lambda edge: edge.weight)
-        mergesort(edges)
+        mergesortEdges(edges, 0, len(edges) - 1)
         return edges
-
-    
