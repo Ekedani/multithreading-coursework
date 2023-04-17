@@ -25,7 +25,6 @@ class ParallelKruskalAlgorithm:
         end = time.time()
         print(f'Sorting Edges: {end - start} s')
         print(f'Sorted correctly: {is_edge_array_sorted(orderedEdges)}')
-        print(len(orderedEdges))
         start = time.time()
         for edge in orderedEdges:
             if mstComponents.find(edge.start) != mstComponents.find(edge.end):

@@ -20,6 +20,10 @@ class SerialKruskalAlgorithm:
         end = time.time()
         # print(f'Initializing MST and Components: {end - start} s')
 
+        for element in graph.edges:
+            print(element.weight, end=' ')
+        print()
+
         orderedEdges = self.__orderEdgesByWeight(edges=graph.edges)
         for element in orderedEdges:
             print(element.weight, end=' ')
