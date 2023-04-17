@@ -5,14 +5,14 @@ from src.SerialKruskalAlgorithm import SerialKruskalAlgorithm
 from src.ParallelKruskalAlgorithm import ParallelKruskalAlgorithm
 
 if __name__ == '__main__':
-    startGraph = GraphGenerator.generate(10)
+    startGraph = GraphGenerator.generate(17)
     serialKruskalSolver = SerialKruskalAlgorithm()
     parallelKruskalSolver = ParallelKruskalAlgorithm(12)
 
-    #start = time.time()
-    #mst = serialKruskalSolver.findMST(startGraph)
-    #end = time.time()
-    #print(f'Total serial time: {end - start}')
+    start = time.time()
+    mst = serialKruskalSolver.findMST(startGraph)
+    end = time.time()
+    print(f'Total serial time: {end - start}')
 
     print()
 

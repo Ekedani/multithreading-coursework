@@ -1,6 +1,9 @@
 import ctypes
 import math
 import multiprocessing
+from multiprocessing.sharedctypes import Array
+
+from _ctypes import Structure
 
 from src.Edge import Edge
 
@@ -12,22 +15,34 @@ def init_worker(data):
     shared_data = data
 
 
+class EdgeStructureC(Structure):
+    _fields_ = [('start', ctypes.c_int), ('end', ctypes.c_int), ('weight', ctypes.c_long)]
+
+
 def parallelMergesortEdges(data: list[Edge], processes: int) -> list[Edge]:
-    data = multiprocessing.Array(ctypes.py_object, data, lock=False)
+    data = list(map(lambda edge: (edge.start, edge.end, edge.weight), data))
+    for element in data:
+        print(element[2], end=' ')
+    print()
+
+    data = Array(EdgeStructureC, data, lock=False)
     pool = multiprocessing.Pool(processes, initializer=init_worker, initargs=(data,))
     partitionSize = int(math.ceil(float(len(data)) / processes))
+
     partitions = [(i * partitionSize, (i + 1) * partitionSize) for i in range(processes)]
     pool.starmap(__parallelMergesortWorker, partitions)
-    print(len(data), partitions)
-    for _ in shared_data:
-        print(_.weight, end=' ')
-    print()
     # while len(partitions) > 1:
     #     unpairedSegment = partitions.pop() if len(partitions) % 2 == 1 else None
+    # TODO: Fix middle param
+
     #     partitions = [(partitions[i][0], partitions[i + 1][1]) for i in range(0, len(partitions), 2)]
     #     pool.starmap(__mergePartitionsWorker, partitions)
     #     partitions += [unpairedSegment] if unpairedSegment else []
     #     print(partitions)
+    for element in data:
+        print(element.weight, end=' ')
+    print()
+
     return list(data)
 
 
@@ -35,22 +50,22 @@ def mergesortEdges(data: list[Edge], left: int, right: int) -> None:
     if left >= right:
         return
     middle = (left + right) // 2
-    print(left, middle, right, 'entered')
+    # print(left, middle, right, 'entered')
     mergesortEdges(data, left, middle)
     mergesortEdges(data, middle + 1, right)
     __merge(data, left, middle, right)
-    print(left, middle, right, 'finished')
+    # print(left, middle, right, 'finished')
 
 
 def __parallelMergesortWorker(left: int, right: int):
     if left >= right:
         return
     middle = (left + right) // 2
-    print(left, middle, right, 'entered')
+    # print(left, middle, right, 'entered')
     mergesortEdges(shared_data, left, middle)
     mergesortEdges(shared_data, middle + 1, right)
     __merge(shared_data, left, middle, right)
-    print(left, middle, right, 'finished')
+    # print(left, middle, right, 'finished')
 
 
 def __mergePartitionsWorker(left: int, middle: int, right: int) -> None:
@@ -77,7 +92,7 @@ def __mergePartitionsWorker(left: int, middle: int, right: int) -> None:
 
 
 def __merge(data: list[Edge], left: int, middle: int, right: int) -> None:
-    print('Entered merge stage')
+    # print('Entered merge stage')
     left_data = data[left:middle + 1]
     right_data = data[middle + 1:right + 1]
 
@@ -99,5 +114,4 @@ def __merge(data: list[Edge], left: int, middle: int, right: int) -> None:
         data[k] = right_data[j]
         j += 1
         k += 1
-    print('Finished merge stage')
-
+    # print('Finished merge stage')
