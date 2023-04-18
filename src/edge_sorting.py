@@ -69,26 +69,7 @@ def __parallelMergesortWorker(left: int, right: int):
 
 
 def __mergePartitionsWorker(left: int, middle: int, right: int) -> None:
-    left_data = shared_data[left:middle + 1]
-    right_data = shared_data[middle + 1:right + 1]
-    i = j = 0
-    k = left
-    while i < len(left_data) and j < len(right_data):
-        if left_data[i].weight < right_data[j].weight:
-            shared_data[k] = left_data[i]
-            i += 1
-        else:
-            shared_data[k] = right_data[j]
-            j += 1
-        k += 1
-    while i < len(left_data):
-        shared_data[k] = left_data[i]
-        i += 1
-        k += 1
-    while j < len(right_data):
-        shared_data[k] = right_data[j]
-        j += 1
-        k += 1
+    __merge(shared_data, left, middle, right)
 
 
 def __merge(data: list[Edge], left: int, middle: int, right: int) -> None:
