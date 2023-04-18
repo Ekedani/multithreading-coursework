@@ -5,9 +5,9 @@ from src.SerialKruskalAlgorithm import SerialKruskalAlgorithm
 from src.ParallelKruskalAlgorithm import ParallelKruskalAlgorithm
 
 if __name__ == '__main__':
-    startGraph = GraphGenerator.generate(16)
+    startGraph = GraphGenerator.generate(10)
     serialKruskalSolver = SerialKruskalAlgorithm()
-    parallelKruskalSolver = ParallelKruskalAlgorithm(1)
+    parallelKruskalSolver = ParallelKruskalAlgorithm(12)
 
     start = time.time()
     mst = serialKruskalSolver.findMST(startGraph)

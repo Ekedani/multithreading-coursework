@@ -25,10 +25,6 @@ def parallelMergesortEdges(data: list[Edge], processes: int) -> list[Edge]:
     :return:
     """
     data = list(map(lambda edge: (edge.start, edge.end, edge.weight), data))
-    for element in data:
-        print(element[2], end=' ')
-    print()
-
     data = Array(EdgeStructureC, data, lock=False)
     pool = multiprocessing.Pool(processes, initializer=init_worker, initargs=(data,))
     partitionSize = int(math.ceil(float(len(data)) / processes))
@@ -43,14 +39,10 @@ def parallelMergesortEdges(data: list[Edge], processes: int) -> list[Edge]:
     #     pool.starmap(__mergePartitionsWorker, partitions)
     #     partitions += [unpairedSegment] if unpairedSegment else []
     #     print(partitions)
-    for element in data:
-        print(element.weight, end=' ')
-    print()
-
     return list(data)
 
 
-def mergesortEdges(data: list[Edge], left: int, right: int) -> None:
+def mergesortEdges(data: list, left: int, right: int) -> None:
     if left >= right:
         return
     middle = (left + right) // 2
@@ -72,12 +64,14 @@ def __mergePartitionsWorker(left: int, middle: int, right: int) -> None:
     __merge(shared_data, left, middle, right)
 
 
-def __merge(data: list[Edge], left: int, middle: int, right: int) -> None:
+def __merge(data: list, left: int, middle: int, right: int) -> None:
     left_data = data[left:middle + 1]
     right_data = data[middle + 1:right + 1]
-    print(left_data[0].weight, right_data[0].weight)
+    # left_data = copy.deepcopy(data[left:middle + 1])
+    # right_data = copy.deepcopy(data[middle + 1:right + 1])
     i = j = 0
     k = left
+    print(left_data[0].weight, right_data[0].weight)
     while i < len(left_data) and j < len(right_data):
         if left_data[i].weight < right_data[j].weight:
             data[k] = left_data[i]
@@ -87,15 +81,11 @@ def __merge(data: list[Edge], left: int, middle: int, right: int) -> None:
             j += 1
         k += 1
     while i < len(left_data):
-        print('left', left_data[0].weight)
         data[k] = left_data[i]
         i += 1
         k += 1
     while j < len(right_data):
-        print('right', right_data[0].weight)
         data[k] = right_data[j]
         j += 1
         k += 1
-    for element in data:
-        print(element.weight, end=' ')
-    print()
+    print(left_data[0].weight, right_data[0].weight)
