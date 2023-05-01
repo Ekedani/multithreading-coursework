@@ -10,6 +10,9 @@ shared_data = []
 
 
 def init_worker(data):
+    """
+    :param data:
+    """
     global shared_data
     shared_data = data
 
@@ -20,19 +23,23 @@ class HelperEdgeStructure(Structure):
 
 def parallelMergesortEdges(data: list[Edge], processes: int) -> list[Edge]:
     """
-    Splits mergesort into subtasks, which in calculated by the processes using shared memory
+    Splits mergesort into subtasks, which are calculated by the processes using shared memory
     :param data: Array of edges to sort
     :param processes: Number of processes used by the pool
     :return:
     """
-    structured_data = [(idx, data[idx].weight) for idx in range(0, len(data))]
+    edges_number = len(data)
+    structured_data = [(idx, data[idx].weight) for idx in range(0, edges_number)]
     structured_data = RawArray(HelperEdgeStructure, structured_data)
+    processes = min(processes, edges_number)
     pool = multiprocessing.Pool(processes, initializer=init_worker, initargs=(structured_data,))
-    partitionSize = int(math.ceil(float(len(data)) / processes))
-    partitions = [(i * partitionSize, (i + 1) * partitionSize - 1) for i in range(processes)]
+
+    partition_size = int(math.ceil(float(edges_number) / processes))
+    partitions = [(i * partition_size, min(edges_number - 1, (i + 1) * partition_size - 1)) for i in range(processes)]
     pool.starmap(__parallelMergesortWorker, partitions)
+
     while len(partitions) > 1:
-        unpairedSegment = partitions.pop() if len(partitions) % 2 == 1 else None
+        unpaired_partition = partitions.pop() if len(partitions) % 2 == 1 else None
         # Joining partitions by middle pivot
         if len(partitions) == processes:
             partitions = [(partitions[i][0], partitions[i][1], partitions[i + 1][1]) for i in
@@ -41,12 +48,17 @@ def parallelMergesortEdges(data: list[Edge], processes: int) -> list[Edge]:
             partitions = [(partitions[i][0], partitions[i][2], partitions[i + 1][2]) for i in
                           range(0, len(partitions), 2)]
         pool.starmap(__mergePartitionsWorker, partitions)
-        partitions += [unpairedSegment] if unpairedSegment else []
+        partitions += [unpaired_partition] if unpaired_partition else []
 
     return [data[x.pos] for x in structured_data]
 
 
 def mergesortEdges(data: list, left: int, right: int) -> None:
+    """
+    :param data: a list of elements to be sorted
+    :param left: left index of the array to be sorted
+    :param right: right index of the array to be sorted
+    """
     if left >= right:
         return
     middle = (left + right) // 2
@@ -55,20 +67,31 @@ def mergesortEdges(data: list, left: int, right: int) -> None:
     __merge(data, left, middle, right)
 
 
-def __parallelMergesortWorker(left: int, right: int):
+def __parallelMergesortWorker(left: int, right: int) -> None:
     """
     It is used as a wrapper function, which provides to the main mergesort part of the shared memory
-    :param left:Ы
-    :param right:
+    :param left: left index of the partition to be sorted
+    :param right: right index of the partition to be sorted
     """
     mergesortEdges(shared_data, left, right)
 
 
 def __mergePartitionsWorker(left: int, middle: int, right: int) -> None:
+    """
+    :param left: left index of the partition to be merged
+    :param middle: middle index of the partition to be merged
+    :param right: right index of the partition to be merged
+    """
     __merge(shared_data, left, middle, right)
 
 
 def __merge(data: list, left: int, middle: int, right: int) -> None:
+    """
+    :param data: a list of elements to be sorted
+    :param left: left index of the subarray to be merged
+    :param middle: middle index of the subarray to be merged
+    :param right: right index of the subarray to be merged
+    """
     left_data = [copy(data[i]) for i in range(left, middle + 1)]
     right_data = [copy(data[i]) for i in range(middle + 1, right + 1)]
     i = j = 0
@@ -89,3 +112,6 @@ def __merge(data: list, left: int, middle: int, right: int) -> None:
         data[k] = right_data[j]
         j += 1
         k += 1
+    # for x in data:
+    #     print(x.weight, end=' ')
+    # print()

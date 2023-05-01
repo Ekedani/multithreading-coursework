@@ -1,7 +1,7 @@
 from src.Edge import is_edge_array_sorted
 from src.Graph import Graph
 from src.DisjointSetUnion import DisjointSetUnion
-from src.edge_sorting import mergesortEdges
+from src.EdgeSorting import mergesortEdges
 
 
 class SerialKruskalAlgorithm:

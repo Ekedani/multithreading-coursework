@@ -3,7 +3,7 @@ import time
 from src.DisjointSetUnion import DisjointSetUnion
 from src.Edge import is_edge_array_sorted
 from src.Graph import Graph
-from src.edge_sorting import parallelMergesortEdges
+from src.EdgeSorting import parallelMergesortEdges
 
 
 class ParallelKruskalAlgorithm:
