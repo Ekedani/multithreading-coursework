@@ -8,7 +8,7 @@ class SerialKruskalAlgorithm:
     def __init__(self):
         pass
 
-    def findMST(self, graph: Graph) -> Graph:
+    def findMinimumSpanningTree(self, graph: Graph) -> Graph:
         mst_graph = Graph()
         mst_components = DisjointSetUnion()
         for vertex in graph.vertices:

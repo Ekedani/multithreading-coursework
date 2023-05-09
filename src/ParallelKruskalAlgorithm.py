@@ -8,7 +8,7 @@ class ParallelKruskalAlgorithm:
     def __init__(self, threads_num):
         self.threads_num = threads_num
 
-    def findMST(self, graph: Graph) -> Graph:
+    def findMinimumSpanningTree(self, graph: Graph) -> Graph:
         mst_graph = Graph()
         mst_components = DisjointSetUnion()
         for vertex in graph.vertices:
