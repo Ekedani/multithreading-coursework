@@ -5,7 +5,7 @@ from src.SerialKruskalAlgorithm import SerialKruskalAlgorithm
 from src.ParallelKruskalAlgorithm import ParallelKruskalAlgorithm
 
 if __name__ == '__main__':
-    startGraph = GraphGenerator.generate(100)
+    startGraph = GraphGenerator.generateComplete(1000, 20000)
     serialKruskalSolver = SerialKruskalAlgorithm()
     parallelKruskalSolver = ParallelKruskalAlgorithm(12)
     print(startGraph.getWeight())
@@ -14,9 +14,7 @@ if __name__ == '__main__':
     end = time.time()
     print(f'Total serial time: {end - start}')
     print(mst.getWeight())
-
-    print()
-
+    print("Parallel start")
     start = time.time()
     mst_par = parallelKruskalSolver.findMST(startGraph)
     end = time.time()
