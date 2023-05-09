@@ -11,7 +11,8 @@ shared_data = []
 
 def init_worker(data):
     """
-    :param data:
+    Helper function which initializes a process pool with shared data
+    :param data: it is shared between processes
     """
     global shared_data
     shared_data = data
@@ -40,7 +41,6 @@ def parallelMergesortEdges(data: list[Edge], processes: int) -> list[Edge]:
 
     while len(partitions) > 1:
         unpaired_partition = partitions.pop() if len(partitions) % 2 == 1 else None
-        # Joining partitions by middle pivot
         if len(partitions) == processes:
             partitions = [(partitions[i][0], partitions[i][1], partitions[i + 1][1]) for i in
                           range(0, len(partitions), 2)]
@@ -112,6 +112,3 @@ def __merge(data: list, left: int, middle: int, right: int) -> None:
         data[k] = right_data[j]
         j += 1
         k += 1
-    # for x in data:
-    #     print(x.weight, end=' ')
-    # print()
