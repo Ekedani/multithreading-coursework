@@ -1,4 +1,4 @@
-def is_edge_array_sorted(edges):
+def isEdgeArraySorted(edges):
     for i in range(1, len(edges)):
         if edges[i].weight < edges[i - 1].weight:
             return False
