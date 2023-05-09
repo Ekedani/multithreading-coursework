@@ -1,4 +1,4 @@
-from src.Edge import is_edge_array_sorted
+from src.Edge import isEdgeArraySorted
 from src.Graph import Graph
 from src.DisjointSetUnion import DisjointSetUnion
 from src.EdgeSorting import mergesortEdges
@@ -9,20 +9,20 @@ class SerialKruskalAlgorithm:
         pass
 
     def findMST(self, graph: Graph) -> Graph:
-        mstGraph = Graph()
-        mstComponents = DisjointSetUnion()
+        mst_graph = Graph()
+        mst_components = DisjointSetUnion()
         for vertex in graph.vertices:
-            mstGraph.addVertex(vertex)
-            mstComponents.makeSet(vertex)
-        orderedEdges = self.__orderEdgesByWeight(edges=graph.edges)
-        print(f'Sorted correctly: {is_edge_array_sorted(orderedEdges)}')
-        for edge in orderedEdges:
-            if mstComponents.find(edge.start) != mstComponents.find(edge.end):
-                mstGraph.addEdge(edge)
-                mstComponents.union(edge.start, edge.end)
-        return mstGraph
+            mst_graph.addVertex(vertex)
+            mst_components.makeSet(vertex)
+        ordered_edges = self.__orderEdgesByWeight(edges=graph.edges)
+        print(f'Sorted correctly: {isEdgeArraySorted(ordered_edges)}')
+        for edge in ordered_edges:
+            if mst_components.find(edge.start) != mst_components.find(edge.end):
+                mst_graph.addEdge(edge)
+                mst_components.union(edge.start, edge.end)
+        return mst_graph
 
     def __orderEdgesByWeight(self, edges):
-        edgesCopy = edges.copy()
-        mergesortEdges(edgesCopy, 0, len(edgesCopy) - 1)
-        return edgesCopy
+        edges_copy = edges.copy()
+        mergesortEdges(edges_copy, 0, len(edges_copy) - 1)
+        return edges_copy
