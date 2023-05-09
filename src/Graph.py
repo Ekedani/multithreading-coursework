@@ -76,4 +76,4 @@ class Graph:
             for row in reader:
                 row = [int(x) for x in row]
                 matrix.append(row)
-        return matrix
+        return Graph.fromMatrix(matrix)
