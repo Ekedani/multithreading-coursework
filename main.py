@@ -1,24 +1,27 @@
 import time
 
+from src.Graph import Graph
 from src.GraphGenerator import GraphGenerator
 from src.SerialKruskalAlgorithm import SerialKruskalAlgorithm
 from src.ParallelKruskalAlgorithm import ParallelKruskalAlgorithm
+from src.TestingHelper import TestingHelper
 
 if __name__ == '__main__':
-    startGraph = GraphGenerator.generateComplete(1000, 20000)
+    # graph = Graph.readFromFile('750')
+    graph = GraphGenerator.generateComplete(40, 100000)
     serialKruskalSolver = SerialKruskalAlgorithm()
     parallelKruskalSolver = ParallelKruskalAlgorithm(12)
-    print(startGraph.getWeight())
-    start = time.time()
-    mst = serialKruskalSolver.findMST(startGraph)
-    end = time.time()
-    print(f'Total serial time: {end - start}')
-    print(mst.getWeight())
+    print(graph.getWeight())
+    serial_start = time.time()
+    mst_ser = serialKruskalSolver.findMinimumSpanningTree(graph)
+    serial_end = time.time()
+    print(f'Total serial time: {serial_end - serial_start}')
+    print(mst_ser.getWeight())
     print("Parallel start")
-    start = time.time()
-    mst_par = parallelKruskalSolver.findMST(startGraph)
-    end = time.time()
-    print(f'Total parallel time: {end - start}')
+    parallel_start = time.time()
+    mst_par = parallelKruskalSolver.findMinimumSpanningTree(graph)
+    parallel_end = time.time()
+    print(f'Total parallel time: {parallel_end - parallel_start}')
     print(mst_par.getWeight())
-
-
+    TestingHelper.renderGraph(graph, 'original')
+    TestingHelper.renderGraph(mst_par, 'mst')
