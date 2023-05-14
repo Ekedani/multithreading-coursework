@@ -27,11 +27,12 @@ class TestingHelper:
         return nx_mst_weight == mst.getWeight()
 
     @staticmethod
-    def renderGraph(graph: Graph, filename: str) -> None:
+    def renderGraph(graph: Graph, filename: str, node_color: str = 'blue') -> None:
         """
         Renders graph to file with given filename
         :param graph: graph to be rendered
         :param filename: destination file name
+        :param node_color:
         """
         nx_graph = nx.Graph()
         weight_matrix = graph.toMatrix()
@@ -43,7 +44,7 @@ class TestingHelper:
                     nx_graph.add_edge(i, j, weight=weight_matrix[i][j])
 
         pos = nx.circular_layout(nx_graph)
-        nx.draw(nx_graph, pos=pos, edgecolors='k', with_labels=False)
+        nx.draw(nx_graph, pos=pos, edgecolors='k', with_labels=False, node_color=f'tab:{node_color}')
         edges = len(nx_graph.edges())
         vertices = len(nx_graph.nodes())
         graph_weight = sum(nx.get_edge_attributes(nx_graph, 'weight').values())

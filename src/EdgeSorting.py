@@ -1,9 +1,8 @@
-import ctypes
-import math
-import multiprocessing
-from copy import copy
+from ctypes import Structure, c_int, c_double
+from multiprocessing import Pool
 from multiprocessing.sharedctypes import RawArray
-from ctypes import Structure
+from math import ceil
+from copy import copy
 from src.Edge import Edge
 
 shared_data = []
@@ -19,7 +18,7 @@ def init_worker(data):
 
 
 class HelperEdgeStructure(Structure):
-    _fields_ = [('pos', ctypes.c_int), ('weight', ctypes.c_double)]
+    _fields_ = [('pos', c_int), ('weight', c_double)]
 
 
 def parallelMergesortEdges(data: list[Edge], processes: int) -> list[Edge]:
@@ -33,9 +32,9 @@ def parallelMergesortEdges(data: list[Edge], processes: int) -> list[Edge]:
     structured_data = [(idx, data[idx].weight) for idx in range(0, edges_number)]
     structured_data = RawArray(HelperEdgeStructure, structured_data)
     processes = min(processes, edges_number)
-    pool = multiprocessing.Pool(processes, initializer=init_worker, initargs=(structured_data,))
+    pool = Pool(processes, initializer=init_worker, initargs=(structured_data,))
 
-    partition_size = int(math.ceil(float(edges_number) / processes))
+    partition_size = int(ceil(float(edges_number) / processes))
     partitions = [(i * partition_size, min(edges_number - 1, (i + 1) * partition_size - 1)) for i in range(processes)]
     pool.starmap(__parallelMergesortWorker, partitions)
 
