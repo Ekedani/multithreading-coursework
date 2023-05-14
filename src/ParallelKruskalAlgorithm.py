@@ -4,8 +4,8 @@ from src.EdgeSorting import parallelMergesortEdges
 
 
 class ParallelKruskalAlgorithm:
-    def __init__(self, threads_num):
-        self.threads_num = threads_num
+    def __init__(self, parallelism):
+        self.parallelism = parallelism
 
     def findMinimumSpanningTree(self, graph: Graph) -> Graph:
         mst_graph = Graph()
@@ -21,5 +21,5 @@ class ParallelKruskalAlgorithm:
         return mst_graph
 
     def __orderEdgesByWeight(self, edges: list) -> list:
-        return parallelMergesortEdges(edges, self.threads_num)
+        return parallelMergesortEdges(edges, self.parallelism)
 
