@@ -11,25 +11,6 @@ from src.ParallelKruskalAlgorithm import ParallelKruskalAlgorithm
 from src.SerialKruskalAlgorithm import SerialKruskalAlgorithm
 
 
-def renderGraph(graph: Graph, filename: str, node_color: str = 'blue') -> None:
-    """
-    Renders graph to file with given filename
-    :param graph: graph to be rendered
-    :param filename: destination file name
-    :param node_color:
-    """
-    nx_graph = convertGraphToNX(graph)
-    pos = nx.circular_layout(nx_graph)
-    nx.draw(nx_graph, pos=pos, edgecolors='k', with_labels=False, node_color=f'tab:{node_color}')
-    edges = len(nx_graph.edges())
-    vertices = len(nx_graph.nodes())
-    graph_weight = sum(nx.get_edge_attributes(nx_graph, 'weight').values())
-    plt.text(0.95, 0.05, f"Edges: {edges}\nVertices: {vertices}\nGraph weight: {graph_weight}",
-             transform=plt.gcf().transFigure, fontsize=10, ha='right', va='bottom')
-    plt.savefig(f'{filename}.png')
-    plt.close()
-
-
 def generatePredefinedTests(test_sizes: list, high: int = 100_000):
     data_directory = 'data'
     for size in test_sizes:
@@ -101,6 +82,36 @@ def runRandomTests(test_sizes: list, parallelism: int = 8, show_time: bool = Tru
             failed_tests.append(size)
     if len(failed_tests) == 0:
         print('None of tests failed.')
+
+
+def visualizeAlgorithms(vertices_num: int, high: int = 100_000, parallelism: int = 8):
+    test_graph = GraphGenerator.generateComplete(vertices_num, high)
+    serialKruskalSolver = SerialKruskalAlgorithm()
+    parallelKruskalSolver = ParallelKruskalAlgorithm(parallelism)
+    serial_mst = serialKruskalSolver.findMinimumSpanningTree(graph=test_graph)
+    parallel_mst = parallelKruskalSolver.findMinimumSpanningTree(graph=test_graph)
+    renderGraph(test_graph, 'original', node_color='green')
+    renderGraph(serial_mst, 'mst_ser', node_color='red')
+    renderGraph(parallel_mst, 'mst_par', node_color='blue')
+
+
+def renderGraph(graph: Graph, filename: str, node_color: str = 'blue') -> None:
+    """
+    Renders graph to file with given filename
+    :param graph: graph to be rendered
+    :param filename: destination file name
+    :param node_color:
+    """
+    nx_graph = convertGraphToNX(graph)
+    pos = nx.circular_layout(nx_graph)
+    nx.draw(nx_graph, pos=pos, edgecolors='k', with_labels=False, node_color=f'tab:{node_color}')
+    edges = len(nx_graph.edges())
+    vertices = len(nx_graph.nodes())
+    graph_weight = sum(nx.get_edge_attributes(nx_graph, 'weight').values())
+    plt.text(0.95, 0.05, f"Edges: {edges}\nVertices: {vertices}\nGraph weight: {graph_weight}",
+             transform=plt.gcf().transFigure, fontsize=10, ha='right', va='bottom')
+    plt.savefig(f'{filename}.png')
+    plt.close()
 
 
 def hasMinimumSpanningTreeWeight(graph: Graph, mst: Graph) -> bool:
