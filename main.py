@@ -5,8 +5,8 @@ from src.GraphGenerator import GraphGenerator
 from src.SerialKruskalAlgorithm import SerialKruskalAlgorithm
 from src.ParallelKruskalAlgorithm import ParallelKruskalAlgorithm
 
-
-VISUALIZE_RESULTS = False
+TEST_SIZES = []
+RANDOMIZE_TESTS = False
 
 if __name__ == '__main__':
     TestingHelper.runPredefinedTests([250, 500, 750, 1000, 1250, 1500, 1750, 2000])
