@@ -49,6 +49,7 @@ def parallelMergesortEdges(data: list[Edge], processes: int) -> list[Edge]:
         pool.starmap(__mergePartitionsWorker, partitions)
         partitions += [unpaired_partition] if unpaired_partition else []
 
+    pool.close()
     return [data[x.pos] for x in structured_data]
 
 
